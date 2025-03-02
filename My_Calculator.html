@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculator</title>
+    <style>
+        body {
+            background-image: url('math.jpg');
+        }
+        .sy {
+            background-color: orange;
+        }
+        .outlook {
+            border-radius: 5px;
+            background-color: none;
+            width: 750px;
+            height: 370px;
+            margin: auto;
+        }
+        button {
+            padding: 12px 70px;
+            font-size: 35px;
+            border-radius: 10px;
+            border: 2px solid black;
+            background-color: cadetblue;
+        }
+        button:active {
+            background-color: maroon;
+        }
+        button:hover {
+            box-shadow: 5px 5px 15px red;
+        }
+        .outlook:hover {
+            box-shadow: 5px 5px 15px red;
+        }
+        /* Added styles for input fields */
+        input[type="text"] {
+            font-size: 40px; /* Increase font size */
+            text-align: right; /* Align text to the right */
+        }
+    </style>
+</head>
+<body>
+    <br>
+    <h1 style="background-color: crimson" align="center">Calculator</h1>
+    <br><br>
+    <div align="center">
+        <input type="text" id="inputField" style="width: 740px; height: 80px;" readonly>
+    </div>
+    <br>
+    <div class="outlook">
+        <table name="btns">
+            <tr>
+                <td><button class="sy" onclick="appendToInput('%')">%</button></td>
+                <td><button class="sy" onclick="appendToInput('/')">/</button></td>
+                <td><button class="sy" onclick="appendToInput('^2')">x<sup>2</sup></button></td>
+                <td><button class="sy" onclick="appendToInput('sqrt(')">√x</button></td>
+            </tr>
+            <tr>
+                <td><button onclick="appendToInput('7')">7</button></td>
+                <td><button onclick="appendToInput('8')">8</button></td>
+                <td><button onclick="appendToInput('9')">9</button></td>
+                <td><button class="sy" onclick="appendToInput('*')">*</button></td>
+            </tr>
+            <tr>
+                <td><button onclick="appendToInput('4')">4</button></td>
+                <td><button onclick="appendToInput('5')">5</button></td>
+                <td><button onclick="appendToInput('6')">6</button></td>
+                <td><button class="sy" onclick="appendToInput('-')">-</button></td>
+            </tr>
+            <tr>
+                <td><button onclick="appendToInput('1')">1</button></td>
+                <td><button onclick="appendToInput('2')">2</button></td>
+                <td><button onclick="appendToInput('3')">3</button></td>
+                <td><button class="sy" onclick="appendToInput('+')">+</button></td>
+            </tr>
+	    <tr>
+		<td> </td>
+		<td><button onclick="appendToInput('0')">0</button></td>
+	    </tr>
+        </table>
+    </div>
+    <br>
+    <div align="center">
+        <button style="background-color: lawngreen" onclick="calculateResult()">=</button>
+        <button style="background-color: lightcoral" onclick="undo()">Undo</button>
+        <br>
+        <input type="text" id="outputField" style="width: 740px; height: 80px;" readonly>
+    </div>
+
+    <script>
+        let inputHistory = []; // Stack to keep track of input history
+
+        function appendToInput(value) {
+            const inputField = document.getElementById('inputField');
+            inputHistory.push(inputField.value); // Store the current input for undo
+            inputField.value += value;
+            document.getElementById('outputField').value = ''; // Clear output when new input is added
+        }
+
+        function calculateResult() {
+            const inputField = document.getElementById('inputField');
+            const outputField = document.getElementById('outputField');
+            let expression = inputField.value;
+
+            // Handle square root and square operations
+            expression = expression.replace(/sqrt\(([^)]+)\)/g, 'Math.sqrt($1)');
+            expression = expression.replace(/(\d+)\^2/g, '($1 * $1)');
+
+            try {
+                const result = eval(expression);
+                outputField.value = result;
+            } catch (error) {
+                outputField.value = 'Error';
+            }
+
+            inputField.value = ''; // Clear input field after calculation
+        }
+
+        function undo() {
+            const inputField = document.getElementById('inputField');
+            if (inputHistory.length > 0) {
+                inputField.value = inputHistory.pop(); // Restore previous input
+            }
+        }
+    </script>
+</body>
+</html>
